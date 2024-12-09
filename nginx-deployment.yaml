@@ -2,21 +2,31 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nginx-deployment
+  labels:
+    app: nginx
 spec:
-  replicas: 1  # Pod 복제본 개수
+  replicas: 2
   selector:
     matchLabels:
-      app: nginx  # Deployment와 Service에서 일치해야 하는 레이블
+      app: nginx
   template:
     metadata:
       labels:
         app: nginx
     spec:
       containers:
-      - name: nginx
-        image: nginx:latest  # Nginx 이미지를 사용
-        ports:
-        - containerPort: 80  # Nginx 컨테이너의 80 포트
+        - name: nginx
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: nginx-volume
+              mountPath: /usr/share/nginx/html/index.html  # index.html 경로로 마운트
+              subPath: index.html  # ConfigMap의 index.html 파일을 마운트
+      volumes:
+        - name: nginx-volume
+          configMap:
+            name: nginx-html  # ConfigMap 이름 확인
 ---
 apiVersion: v1
 kind: Service
@@ -24,10 +34,9 @@ metadata:
   name: nginx-service
 spec:
   selector:
-    app: nginx  # Deployment의 레이블과 일치해야 함
+    app: nginx
   ports:
     - protocol: TCP
-      port: 80  # 서비스의 포트 (외부에서 접근하는 포트)
-      targetPort: 80  # 컨테이너의 포트
-  type: NodePort  # 외부에서 접근 가능하게 NodePort 사용
-
+      port: 80
+      targetPort: 80
+  type: NodePort
