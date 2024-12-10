@@ -8,3 +8,4 @@ spec:
   ports:
   - port: 80
     targetPort: 80
+  type: NodePort  # 외부에서 접근 가능하게 NodePort 사용
