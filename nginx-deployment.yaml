@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: nginx:latest  # Nginx 이미지를 사용
+        image: nginx:1.20.1  # Nginx 이미지를 사용
         ports:
         - containerPort: 80  # Nginx 컨테이너의 80 포트
 ---
